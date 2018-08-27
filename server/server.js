@@ -20,8 +20,8 @@ io.on('connection', (socket) =>{
    
    socket.on("createMessage", (message) =>{
     console.log("message created", message);
-    io.emit('newMessage', generateMessage(message.from, message.to));
-    
+    io.emit('newMessage', generateMessage(message.from, message.text));
+
    /*  socket.broadcast.emit('newMessage', {
         to:'asd',
         from:'asd'
