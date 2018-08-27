@@ -1,7 +1,7 @@
 var socket = io();
 
-    socket.on('connect', function(){
-        console.log('Connected to server');
+    socket.on('connect', function(message){
+        console.log('Connected to server', message);
 
         });
 
