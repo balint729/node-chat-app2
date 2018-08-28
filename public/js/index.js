@@ -11,19 +11,19 @@ var socket = io();
     });
 
     socket.on('newMessage', function(message){
-        console.log("new message 2", message);
+        var formattedTime = moment(message.createdAt).format('h:mm a');
         var li = jQuery('<li> </li>');
-        li.text(`${message.from}: ${message.text}`);
+        li.text(`${message.from} ${formattedTime}: ${message.text}`);
 
         jQuery('#messages').append(li);
 
     });
 
     socket.on('newLocationMessage', function(message){
-        console.log("new locationMessage", message);
+        var formattedTime = moment(message.createdAt).format('h:mm a');
         var li = jQuery('<li> </li>');
         var a = jQuery('<a target="_blank"> My current location </a>');
-        li.text(`${message.from}: `);
+        li.text(`${message.from} ${formattedTime}: `);
         a.attr('href', message.url);
         li.append(a);
 
@@ -32,13 +32,13 @@ var socket = io();
 
     jQuery('#message-form').on('submit', function (e) {
         e.preventDefault();
+        var messageTextBox = jQuery("[id='messageField']");
       
         socket.emit('createMessage', {
           from: 'User',
-        //   text: 'asd'
-          text: jQuery("[id='messageField']").val()
+          text: messageTextBox.val()
         }, function () {
-      
+            messageTextBox.val('');
         });
       });
 
@@ -47,14 +47,17 @@ var socket = io();
           if(!navigator.geolocation){
               return alert('Geolocation not supported by your browser.');
           }
-
+          locationButton.attr('disabled', true).text('Sending location...');
           navigator.geolocation.getCurrentPosition(function(position){
+            locationButton.attr('disabled', false).text('Send location');
             socket.emit('createLocationMessage', {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude
             })
+            
           }, function(){
             alert('Unable to fetch location');
+            locationButton.attr('disabled', false).text('Send location');
           });
 
       });
