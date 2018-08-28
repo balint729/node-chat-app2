@@ -18,6 +18,17 @@ var socket = io();
 
     socket.on('connect', function(message){
         console.log('Connected to server', message);
+        var params = jQuery.deparam(window.location.search);
+
+        socket.emit('join', params, function(err){
+            if(err){
+                alert(err);
+                window.location.href = "/";
+            }else{
+                console.log('No error');
+            }
+
+        });
 
         });
 
